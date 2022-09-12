@@ -39,3 +39,17 @@ module "application_insights" {
   ai_retention_in_days = 30
   default_tags         = local.general_tags
 }
+
+#Cuenta de almacenamiento
+module "storage_account" {
+  source  = "./modules/storage_account"
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
+  location = local.general_region
+  resource_group_name = "rg-unir-tfm-iac-demo"
+  default_tags = local.general_tags
+  storage_account_name = "saunirtfmiacdemo"
+  storage_account_tier = "Standard"
+  storage_account_replication_type = "LRS"  
+}
