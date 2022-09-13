@@ -36,3 +36,4 @@ terraform.rc
 .DS_Store
 
 .terraform.lock.hcl
+.fake
