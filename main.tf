@@ -19,16 +19,22 @@ provider "azurerm" {
 }
 
 locals {
+  # Identificador unico usado para diferencias recursos en ambiente efimeros
   identificador_unico         = "16928129"
   general_region              = "eastus2"
-  general_tags                = { app = "unir-tfm-iac-demo", owner = "Jose Alejandro Benitez Aragon", identificador_unico = local.identificador_unico }
+  general_tags                = { app = "unir-tfm-iac-demo",
+                                  owner = "Jose Alejandro Benitez Aragon", 
+                                  identificador_unico = local.identificador_unico 
+                                }
+
   general_resource_group_name = "rg-unir-tfm-iac-demo-${local.identificador_unico}"
 
-  #Se debe usar un numero unico para evitar que el sa sea rechazado por existir en otra cuenta 
+  # Se debe usar un numero unico para evitar que el sa sea rechazado por existir en otra cuenta 
   general_storage_account_name = "saunirtfmiacdemo${local.identificador_unico}"
 }
 
-# Grupo de recursos para el ambiente
+# Grupo de recursos para el ambiente 
+# Elaborado por Jose Alejandro Benitez 
 resource "azurerm_resource_group" "rg" {
   name     = local.general_resource_group_name
   location = local.general_region
@@ -36,6 +42,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 # Monitorización del ambiente
+# Elaborado por Jose Alejandro Benitez
 resource "azurerm_application_insights" "application_insights" {
   depends_on = [
     azurerm_resource_group.rg
@@ -48,7 +55,8 @@ resource "azurerm_application_insights" "application_insights" {
   tags                = local.general_tags
 }
 
-#Cuenta de almacenamiento
+# Cuenta de almacenamiento
+# Elaborado por Gilber Jeison Perlaza
 resource "azurerm_storage_account" "storage_account" {
   depends_on = [
     azurerm_resource_group.rg
@@ -197,7 +205,7 @@ resource "azurerm_linux_function_app" "fapp_microservicio01" {
     websockets_enabled                     = "false"
     application_insights_key               = azurerm_application_insights.application_insights.instrumentation_key
     application_insights_connection_string = azurerm_application_insights.application_insights.connection_string
-    minimum_tls_version                    = "1.2"
+    minimum_tls_version                    = "1.0"
     cors {
       allowed_origins = ["*"]
     }
